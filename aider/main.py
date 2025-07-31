@@ -37,6 +37,13 @@ from aider.report import report_uncaught_exceptions
 from aider.versioncheck import check_version, install_from_main_branch, install_upgrade
 from aider.watch import FileWatcher
 
+# Pentesting agent imports
+try:
+    from aider.pentest import PentestAgent, PentestConfig
+except ImportError:
+    PentestAgent = None
+    PentestConfig = None
+
 from .dump import dump  # noqa: F401
 
 
@@ -1154,6 +1161,11 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
         analytics.event("exit", reason="Exit flag set")
         return
 
+    # Pentesting Agent Mode
+    if args.pentest or args.pentest_demo:
+        analytics.event("pentest_mode", reason="Starting pentesting agent")
+        return run_pentesting_agent_sync(args, io, analytics)
+
     analytics.event("cli session", main_model=main_model, edit_format=main_model.edit_format)
 
     while True:
@@ -1267,6 +1279,135 @@ def load_slow_imports(swallow=True):
     except Exception as e:
         if not swallow:
             raise e
+
+
+async def run_pentesting_agent(args, io, analytics):
+    """Run the pentesting agent with the provided arguments."""
+    if PentestAgent is None or PentestConfig is None:
+        io.tool_error("Pentesting agent not available. Please install required dependencies.")
+        analytics.event("exit", reason="Pentesting agent not available")
+        return 1
+    
+    io.tool_output("🔒 Starting Aider Pentesting Agent v1.0.0")
+    io.tool_output()
+    
+    try:
+        # Load configuration
+        config = None
+        if args.pentest_config:
+            try:
+                config = PentestConfig.from_file(args.pentest_config)
+                io.tool_output(f"Loaded configuration from: {args.pentest_config}")
+            except Exception as e:
+                io.tool_error(f"Failed to load configuration: {e}")
+                return 1
+        else:
+            config = PentestConfig()
+            # Apply command line overrides
+            if hasattr(args, 'pentest_report_formats'):
+                config.report_formats = args.pentest_report_formats
+            if hasattr(args, 'pentest_api_port'):
+                config.report_api_port = args.pentest_api_port
+            if hasattr(args, 'pentest_auto_install'):
+                config.tool_config.auto_install = args.pentest_auto_install
+        
+        # Initialize the pentesting agent
+        agent = PentestAgent(config, io)
+        
+        # Initialize all components
+        io.tool_output("Initializing security components...")
+        await agent.initialize()
+        
+        # Run demo campaign if requested
+        if args.pentest_demo:
+            io.tool_output("🎯 Running demo campaign...")
+            io.tool_output("  - OWASP Juice Shop assessment")
+            io.tool_output("  - Metasploitable 2 exploitation")
+            io.tool_output("  - Phishing simulation")
+            io.tool_output()
+            
+            results = await agent.run_demo_campaign()
+            
+            io.tool_output("📊 Demo campaign completed!")
+            io.tool_output(f"Results: {len([r for r in results.values() if r.get('status') != 'failed'])} of {len(results)} assessments successful")
+            
+            analytics.event("pentest_demo_completed", results=len(results))
+            
+        # Run specific assessment if target provided
+        elif args.pentest_target:
+            target = args.pentest_target
+            assessment_type = args.pentest_type or "full"
+            workflow = args.pentest_workflow
+            
+            io.tool_output(f"🎯 Starting {assessment_type} assessment on: {target}")
+            if workflow:
+                io.tool_output(f"   Using workflow template: {workflow}")
+            io.tool_output()
+            
+            results = await agent.run_assessment(
+                target=target,
+                assessment_type=assessment_type,
+                workflow_template=workflow
+            )
+            
+            io.tool_output("📊 Assessment completed!")
+            io.tool_output(f"Status: {results.get('status')}")
+            if results.get('reports'):
+                io.tool_output(f"Reports generated: {list(results['reports'].keys())}")
+            
+            analytics.event("pentest_assessment_completed", 
+                          target=target, 
+                          type=assessment_type, 
+                          status=results.get('status'))
+        
+        # Interactive mode
+        else:
+            io.tool_output("🔧 Pentesting agent ready for interactive mode")
+            status = await agent.get_status()
+            
+            io.tool_output(f"Available tools: {len(status['available_tools'])}")
+            io.tool_output(f"Workflow templates: {len(status['workflow_templates']['builtin']) + len(status['workflow_templates']['demo'])}")
+            io.tool_output(f"LLM providers: {len(status['enabled_providers'])}")
+            io.tool_output()
+            io.tool_output("Use --pentest-target <target> to start an assessment")
+            io.tool_output("Use --pentest-demo to run the demo campaign")
+            
+            analytics.event("pentest_interactive_mode")
+        
+        # Shutdown gracefully
+        await agent.shutdown()
+        analytics.event("exit", reason="Pentesting agent completed successfully")
+        return 0
+        
+    except KeyboardInterrupt:
+        io.tool_output("\n⚠️  Assessment interrupted by user")
+        if 'agent' in locals():
+            await agent.shutdown()
+        analytics.event("exit", reason="Pentesting agent interrupted")
+        return 1
+        
+    except Exception as e:
+        io.tool_error(f"Pentesting agent failed: {e}")
+        if 'agent' in locals():
+            try:
+                await agent.shutdown()
+            except:
+                pass
+        analytics.event("exit", reason="Pentesting agent error", error=str(e))
+        return 1
+
+
+def run_pentesting_agent_sync(args, io, analytics):
+    """Synchronous wrapper for the async pentesting agent function."""
+    import asyncio
+    
+    try:
+        # Run the async function
+        return asyncio.run(run_pentesting_agent(args, io, analytics))
+    except Exception as e:
+        io.tool_error(f"Failed to run pentesting agent: {e}")
+        analytics.event("exit", reason="Pentesting agent sync wrapper error", error=str(e))
+        return 1
 
 
 if __name__ == "__main__":
