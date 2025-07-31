@@ -41,6 +41,12 @@ class AppConfig(BaseModel):
     rl: RLConfig
     log_level: Optional[str] = "INFO"
 
+    # Track the source path of the loaded config file
+    _source_path: Optional[str] = None
+
+    class Config:
+        underscore_attrs_are_private = True
+
 _CONFIG_SINGLETON = None
 _CONFIG_LOCK = Lock()
 
@@ -50,11 +56,25 @@ def load_yaml_config(path: str = "config.yaml") -> dict:
     return _substitute_env_vars(raw)
 
 def get_config(path: Optional[str] = None) -> AppConfig:
+    """
+    Obtain the global AppConfig singleton.
+    If a path is provided, always reload from that path and update the singleton.
+    Otherwise, return the cached singleton if present, or load from CONFIG_FILE env/default path.
+    """
     global _CONFIG_SINGLETON
     with _CONFIG_LOCK:
+        if path is not None:
+            # Always reload from the given path and update the singleton
+            dct = load_yaml_config(path)
+            config = AppConfig(**dct)
+            object.__setattr__(config, "_source_path", path)
+            _CONFIG_SINGLETON = config
+            return _CONFIG_SINGLETON
         if _CONFIG_SINGLETON is not None:
             return _CONFIG_SINGLETON
-        config_path = path or os.environ.get("CONFIG_FILE", "config.yaml")
+        config_path = os.environ.get("CONFIG_FILE", "config.yaml")
         dct = load_yaml_config(config_path)
-        _CONFIG_SINGLETON = AppConfig(**dct)
+        config = AppConfig(**dct)
+        object.__setattr__(config, "_source_path", config_path)
+        _CONFIG_SINGLETON = config
         return _CONFIG_SINGLETON
