@@ -965,22 +965,6 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
         args.max_chat_history_tokens or main_model.max_chat_history_tokens,
     )
 
-    # Select Commands or PentestCommands based on --pentest
-    cmd_cls = PentestCommands if getattr(args, "pentest", False) and PentestCommands else Commands
-    commands = cmd_cls(
-        io,
-        None,
-        voice_language=args.voice_language,
-        voice_input_device=args.voice_input_device,
-        voice_format=args.voice_format,
-        verify_ssl=args.verify_ssl,
-        args=args,
-        parser=parser,
-        verbose=args.verbose,
-        editor=args.editor,
-        original_read_only_fnames=read_only_fnames,
-    )
-
     if args.cache_prompts and args.map_refresh == "auto":
         args.map_refresh = "files"
 
