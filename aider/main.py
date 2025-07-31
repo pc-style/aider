@@ -24,6 +24,18 @@ from aider.args import get_parser
 from aider.coders import Coder
 from aider.coders.base_coder import UnknownEditFormat
 from aider.commands import Commands, SwitchCoder
+
+# Try to import PentestCommands if available
+try:
+    from aider.pentest.commands import PentestCommands
+except ImportError:
+    PentestCommands = None
+
+# Try to import PentestCommands if available
+try:
+    from aider.pentest.commands import PentestCommands
+except ImportError:
+    PentestCommands = None
 from aider.copypaste import ClipboardWatcher
 from aider.deprecated import handle_deprecated_model_args
 from aider.format_settings import format_settings, scrub_sensitive_info
@@ -932,7 +944,9 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
     else:
         analytics.event("no-repo")
 
-    commands = Commands(
+    # Select Commands or PentestCommands based on --pentest
+    cmd_cls = PentestCommands if getattr(args, "pentest", False) and PentestCommands else Commands
+    commands = cmd_cls(
         io,
         None,
         voice_language=args.voice_language,
@@ -949,6 +963,22 @@ def main(argv=None, input=None, output=None, force_git_root=None, return_coder=F
     summarizer = ChatSummary(
         [main_model.weak_model, main_model],
         args.max_chat_history_tokens or main_model.max_chat_history_tokens,
+    )
+
+    # Select Commands or PentestCommands based on --pentest
+    cmd_cls = PentestCommands if getattr(args, "pentest", False) and PentestCommands else Commands
+    commands = cmd_cls(
+        io,
+        None,
+        voice_language=args.voice_language,
+        voice_input_device=args.voice_input_device,
+        voice_format=args.voice_format,
+        verify_ssl=args.verify_ssl,
+        args=args,
+        parser=parser,
+        verbose=args.verbose,
+        editor=args.editor,
+        original_read_only_fnames=read_only_fnames,
     )
 
     if args.cache_prompts and args.map_refresh == "auto":

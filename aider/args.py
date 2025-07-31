@@ -653,6 +653,20 @@ def get_parser(default_config_files, git_root):
             " (disables chat mode)"
         ),
     ).complete = shtab.FILE
+
+    ##########
+    pentest = parser.add_argument_group("Pentest mode")
+    pentest.add_argument(
+        "--pentest",
+        action="store_true",
+        default=False,
+        help="Enable PentestAider security tooling",
+    )
+    pentest.add_argument(
+        "--scope-file",
+        default="scope.txt",
+        help="File containing newline-separated list of in-scope domain names/IPs",
+    )
     group.add_argument(
         "--gui",
         "--browser",
