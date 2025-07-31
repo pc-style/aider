@@ -46,6 +46,13 @@ Aider works best with Claude 3.7 Sonnet, DeepSeek R1 & Chat V3, OpenAI o1, o3-mi
 
 <br>
 
+### [Pentesting Agent Framework](PENTEST_README.md)
+
+<a href="PENTEST_README.md"><img src="https://aider.chat/assets/icons/brain.svg" width="32" height="32" align="left" valign="middle" style="margin-right:10px"></a>
+**NEW**: Next-generation autonomous pentesting agent with multi-domain security assessments, LLM flexibility, compliance features, and enterprise-grade reporting.
+
+<br>
+
 ### [Maps your codebase](https://aider.chat/docs/repomap.html)
 
 <a href="https://aider.chat/docs/repomap.html"><img src="https://aider.chat/assets/icons/map-outline.svg" width="32" height="32" align="left" valign="middle" style="margin-right:10px"></a>
