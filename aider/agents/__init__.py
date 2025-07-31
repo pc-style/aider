@@ -1,0 +1,1 @@
+# Multi-Agent Workflow Engine package for aider
