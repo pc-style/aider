@@ -667,6 +667,12 @@ def get_parser(default_config_files, git_root):
         default="scope.txt",
         help="File containing newline-separated list of in-scope domain names/IPs",
     )
+    pentest.add_argument(
+        "--unsafe-exec",
+        action="store_true",
+        default=False,
+        help="Actually execute external security tools; otherwise run in safe stub mode",
+    )
     group.add_argument(
         "--gui",
         "--browser",
