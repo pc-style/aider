@@ -697,6 +697,61 @@ def get_parser(default_config_files, git_root):
     )
 
     ##########
+    group = parser.add_argument_group("Pentesting Agent")
+    group.add_argument(
+        "--pentest",
+        action="store_true",
+        help="Enable pentesting agent mode",
+        default=False,
+    )
+    group.add_argument(
+        "--pentest-config",
+        metavar="CONFIG_FILE",
+        help="Pentesting agent configuration file",
+    ).complete = shtab.FILE
+    group.add_argument(
+        "--pentest-target",
+        metavar="TARGET",
+        help="Target for pentesting assessment (IP, hostname, or URL)",
+    )
+    group.add_argument(
+        "--pentest-type",
+        choices=["full", "web", "network", "social_engineering", "reverse_engineering", "fuzzing", "post_exploitation"],
+        help="Type of pentesting assessment to perform",
+        default="full",
+    )
+    group.add_argument(
+        "--pentest-workflow",
+        metavar="WORKFLOW",
+        help="Specific workflow template to use (e.g., juice_shop, metasploitable, phishing_sim)",
+    )
+    group.add_argument(
+        "--pentest-demo",
+        action="store_true", 
+        help="Run the demo campaign (OWASP Juice Shop, Metasploitable 2, phishing simulation)",
+        default=False,
+    )
+    group.add_argument(
+        "--pentest-report-formats",
+        nargs="+",
+        choices=["json", "html", "pdf", "markdown"],
+        help="Report formats to generate",
+        default=["json", "html"],
+    )
+    group.add_argument(
+        "--pentest-api-port",
+        type=int,
+        help="Port for pentesting reporting API",
+        default=8080,
+    )
+    group.add_argument(
+        "--pentest-auto-install",
+        action=argparse.BooleanOptionalAction,
+        help="Automatically install security tools",
+        default=True,
+    )
+
+    ##########
     group = parser.add_argument_group("Voice settings")
     group.add_argument(
         "--voice-format",

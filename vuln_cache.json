@@ -1,0 +1,75 @@
+{
+  "cve_cache": {
+    "CVE-2021-44228": {
+      "cvss_v3_score": 10.0,
+      "severity": "CRITICAL",
+      "description": "Apache Log4j2 Remote Code Execution",
+      "exploitability": 9.8,
+      "vector": "NETWORK",
+      "published": "2021-12-10"
+    },
+    "CVE-2021-4034": {
+      "cvss_v3_score": 7.8,
+      "severity": "HIGH",
+      "description": "PwnKit Local Privilege Escalation",
+      "exploitability": 8.5,
+      "vector": "LOCAL",
+      "published": "2022-01-25"
+    },
+    "CVE-2020-1472": {
+      "cvss_v3_score": 10.0,
+      "severity": "CRITICAL",
+      "description": "Zerologon Domain Controller Vulnerability",
+      "exploitability": 9.0,
+      "vector": "NETWORK",
+      "published": "2020-08-11"
+    },
+    "CVE-2019-0708": {
+      "cvss_v3_score": 9.8,
+      "severity": "CRITICAL",
+      "description": "BlueKeep RDP Remote Code Execution",
+      "exploitability": 8.8,
+      "vector": "NETWORK",
+      "published": "2019-05-14"
+    }
+  },
+  "exploit_db": {
+    "CVE-2021-44228": {
+      "exploit_available": true,
+      "exploit_reliability": "Excellent",
+      "metasploit_modules": [
+        "exploit/multi/http/log4shell_header_injection"
+      ],
+      "public_exploits": 15,
+      "weaponized": true
+    },
+    "CVE-2021-4034": {
+      "exploit_available": true,
+      "exploit_reliability": "Excellent",
+      "metasploit_modules": [
+        "exploit/linux/local/polkit_pkexec"
+      ],
+      "public_exploits": 8,
+      "weaponized": true
+    },
+    "CVE-2020-1472": {
+      "exploit_available": true,
+      "exploit_reliability": "Good",
+      "metasploit_modules": [
+        "exploit/windows/dcerpc/ms20_069_zerologon"
+      ],
+      "public_exploits": 12,
+      "weaponized": true
+    },
+    "CVE-2019-0708": {
+      "exploit_available": true,
+      "exploit_reliability": "Average",
+      "metasploit_modules": [
+        "exploit/windows/rdp/cve_2019_0708_bluekeep_rce"
+      ],
+      "public_exploits": 6,
+      "weaponized": false
+    }
+  },
+  "last_update": "2025-07-31T22:46:18.985721"
+}
