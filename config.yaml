@@ -1,0 +1,23 @@
+llm:
+  providers:
+    - openai
+    - anthropic
+  keys:
+    openai: "${OPENAI_API_KEY}"
+    anthropic: "${ANTHROPIC_API_KEY}"
+  priority:
+    - openai
+    - anthropic
+
+tools:
+  auto_install: true
+
+safety:
+  boundary_regex: []
+
+rl:
+  reward_weights:
+    token_efficiency: 0.5
+    user_satisfaction: 0.5
+
+log_level: INFO
