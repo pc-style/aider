@@ -1,0 +1,13 @@
+# Example workflow template for a web application assessment
+steps:
+  - agent: ReconAgent
+    params:
+      target: "http://example.com"
+  - agent: ExploitAgent
+    params: {}
+  - agent: ReportAgent
+    params: {}
+  - agent: CleanupAgent
+    params: {}
+success_criteria:
+  - "high_severity_vuln_found"
