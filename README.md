@@ -1,5 +1,5 @@
 > [!WARNING]
-> **Archived imported upstream derivative/reference — do not use this repository for new work.**
+> **Archive pending — do not use this repository for new work.** This imported upstream derivative/reference is scheduled for archive once repository administration permission is available.
 >
 > This repository was imported from the canonical [Aider-AI/aider](https://github.com/Aider-AI/aider) project, with shared upstream base commit [`f38200c511674e83a1b34a44e85beb77ee78f5c7`](https://github.com/Aider-AI/aider/commit/f38200c511674e83a1b34a44e85beb77ee78f5c7). The imported code is licensed under Apache-2.0 as recorded in [`LICENSE.txt`](LICENSE.txt). The imported upstream history, license text, copyright notices, and file-level notices are preserved.
 >
