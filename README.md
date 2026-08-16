@@ -1,3 +1,12 @@
+> [!WARNING]
+> **Archived imported upstream derivative/reference — do not use this repository for new work.**
+>
+> This repository was imported from the canonical [Aider-AI/aider](https://github.com/Aider-AI/aider) project, with shared upstream base commit [`f38200c511674e83a1b34a44e85beb77ee78f5c7`](https://github.com/Aider-AI/aider/commit/f38200c511674e83a1b34a44e85beb77ee78f5c7). The imported code is licensed under Apache-2.0 as recorded in [`LICENSE.txt`](LICENSE.txt). The imported upstream history, license text, copyright notices, and file-level notices are preserved.
+>
+> **Maintained pc-style delta:** none. **Historical, unmaintained delta:** 14 PentestAider commits added pentesting mode and commands, OSINT/reconnaissance, vulnerability scanning, exploit and social-engineering simulation, sandboxing, CI, reports, and evidence management; the last custom commit was 2025-08-01. There is no ongoing upstream sync, maintenance, or support here.
+>
+> Use [the canonical upstream](https://github.com/Aider-AI/aider) for current code, releases, issues, and security updates.
+
 <p align="center">
     <a href="https://aider.chat/"><img src="https://aider.chat/assets/logo.svg" alt="Aider Logo" width="300"></a>
 </p>
